@@ -1,0 +1,13 @@
+version: '3'
+
+services:
+
+ node:
+    image: node:16.7.0-buster
+    container_name: instagram_node_v2
+    restart: unless-stopped
+    command: ["nodejs", "./dist/app.js"]
+    volumes:
+      - ./:/app
+    ports:
+      - ${NODE_EXPOSED_PORT:-0}:3000

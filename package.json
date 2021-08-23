@@ -1,0 +1,22 @@
+{
+  "name": "node-with-ts",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/app.js",
+  "scripts": {
+    "start": "tsc && node dist/app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Ali sarlak",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/express": "^4.17.11",
+    "tslint": "^5.20.1",
+    "typescript": "^3.9.9"
+  },
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "express": "^4.17.1",
+    "instagram-private-api": "^1.44.1"
+  }
+}
