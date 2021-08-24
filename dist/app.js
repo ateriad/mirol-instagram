@@ -23,7 +23,7 @@ app.post('/api/v2/login', jsonParser, (req, res) => __awaiter(void 0, void 0, vo
         const ig = new instagram_private_api_1.IgApiClient();
         ig.state.generateDevice(req.body.username);
         const auth = yield ig.account.login(req.body.username, req.body.password);
-        res.send({ 'error': false, 'status': '0' });
+        res.send({ 'status': 'ok' });
    }
     catch (e) {
         res.status(400).send({'message': e.message });
