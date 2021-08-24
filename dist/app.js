@@ -18,18 +18,18 @@ var jsonParser = bodyParser.json();
 const instagram_private_api_1 = require("instagram-private-api");
 const app = express_1.default();
 const port = 3000;
-app.post('/api/live/login', jsonParser, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
+app.post('/api/v2/login', jsonParser, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+   try {
         const ig = new instagram_private_api_1.IgApiClient();
         ig.state.generateDevice(req.body.username);
         const auth = yield ig.account.login(req.body.username, req.body.password);
         res.send({ 'error': false, 'status': '0' });
-    }
+   }
     catch (e) {
-        res.send({ 'error': true, 'message': e.message });
+        res.status(400).send({'message': e.message });
     }
 }));
-app.post('/api/live/start', jsonParser, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+app.post('/api/v2/live/start', jsonParser, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const ig = new instagram_private_api_1.IgApiClient();
         ig.state.generateDevice(req.body.username);
@@ -50,17 +50,17 @@ app.post('/api/live/start', jsonParser, (req, res) => __awaiter(void 0, void 0, 
                     yield ig.live.comment(broadcast_id, req.body.comment);
                 }
             }
-            res.send({ 'error': 'false', 'status': '0', 'broadcast_id': broadcast_id, 'base_url': stream_url, 'stream_key': stream_key });
+            res.send({'broadcast_id': broadcast_id, 'stream_url': stream_url, 'stream_key': stream_key });
         }
         catch (e) {
-            res.send({ 'error': 'true', 'status': '1', 'message': e.message });
+            res.status(500).send({'message': e.message });
         }
     }
     catch (e) {
-        res.send({ 'error': 'true', 'status': '0', 'message': e.message });
+        res.status(400).send({ 'message': e.message });
     }
 }));
-app.post('/api/live/stop', jsonParser, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+app.post('/api/v2/live/stop', jsonParser, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const ig = new instagram_private_api_1.IgApiClient();
         ig.state.generateDevice(req.body.username);
@@ -68,17 +68,17 @@ app.post('/api/live/stop', jsonParser, (req, res) => __awaiter(void 0, void 0, v
         try {
             const live_info = yield ig.live.endBroadcast(req.body.broadcast_id);
             let info = yield ig.live.getFinalViewerList(req.body.broadcast_id);
-            res.send({ 'error': 'false', 'status': '0', 'count': info.total_unique_viewer_count, 'message': live_info });
+            res.send({ 'count': info.total_unique_viewer_count, 'message': live_info });
         }
         catch (e) {
-            res.send({ 'error': 'false', 'status': '0', 'message': e.message });
+            res.status(500).send({ 'message': e.message });
         }
     }
     catch (e) {
-        res.send({ 'error': 'true', 'status': '0', 'message': e.message });
+        res.status(400).send({ 'message': e.message });
     }
 }));
-app.post('/api/live/mutecomment', jsonParser, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+app.post('/api/v2/live/mutecomment', jsonParser, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const ig = new instagram_private_api_1.IgApiClient();
         ig.state.generateDevice(req.body.username);
@@ -90,14 +90,14 @@ app.post('/api/live/mutecomment', jsonParser, (req, res) => __awaiter(void 0, vo
             else {
                 yield ig.live.unmuteComment(req.body.broadcast_id);
             }
-            res.send({ 'error': 'false', 'status': '0' });
+            res.send({ 'status': 'ok' });
         }
         catch (e) {
-            res.send({ 'error': 'false', 'status': '0', 'message': e.message });
+            res.status(500).send({ 'message': e.message });
         }
     }
     catch (e) {
-        res.send({ 'error': 'true', 'status': '0', 'message': e.message });
+        res.status(400).send({ 'message': e.message });
     }
 }));
 app.listen(port, () => {
