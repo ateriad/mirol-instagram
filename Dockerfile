@@ -11,4 +11,4 @@ RUN npm install
 COPY . .
 EXPOSE 3000
 
-CMD [ "nodejs", "dist/app.js"]
+CMD [ "nodejs", "bin/app.js"]
