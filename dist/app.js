@@ -18,17 +18,19 @@ var jsonParser = bodyParser.json();
 const instagram_private_api_1 = require("instagram-private-api");
 const app = express_1.default();
 const port = 3000;
+
 app.post('/api/v2/login', jsonParser, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-   try {
+    try {
         const ig = new instagram_private_api_1.IgApiClient();
         ig.state.generateDevice(req.body.username);
         const auth = yield ig.account.login(req.body.username, req.body.password);
         res.send({ 'status': 'ok' });
-   }
+    }
     catch (e) {
-        res.status(400).send({'message': e.message });
+        res.status(400).send({ 'message': e.message });
     }
 }));
+
 app.post('/api/v2/live/start', jsonParser, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const ig = new instagram_private_api_1.IgApiClient();
@@ -50,16 +52,17 @@ app.post('/api/v2/live/start', jsonParser, (req, res) => __awaiter(void 0, void 
                     yield ig.live.comment(broadcast_id, req.body.comment);
                 }
             }
-            res.send({'broadcast_id': broadcast_id, 'stream_url': stream_url, 'stream_key': stream_key });
+            res.send({ 'broadcast_id': broadcast_id, 'stream_url': stream_url, 'stream_key': stream_key });
         }
         catch (e) {
-            res.status(500).send({'message': e.message });
+            res.status(500).send({ 'message': e.message });
         }
     }
     catch (e) {
         res.status(400).send({ 'message': e.message });
     }
 }));
+
 app.post('/api/v2/live/stop', jsonParser, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const ig = new instagram_private_api_1.IgApiClient();
@@ -78,6 +81,7 @@ app.post('/api/v2/live/stop', jsonParser, (req, res) => __awaiter(void 0, void 0
         res.status(400).send({ 'message': e.message });
     }
 }));
+
 app.post('/api/v2/live/mutecomment', jsonParser, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const ig = new instagram_private_api_1.IgApiClient();
@@ -100,7 +104,8 @@ app.post('/api/v2/live/mutecomment', jsonParser, (req, res) => __awaiter(void 0,
         res.status(400).send({ 'message': e.message });
     }
 }));
+
 app.listen(port, () => {
     return console.log(`server is listening on ${port}`);
 });
-//# sourceMappingURL=app.js.map
+
