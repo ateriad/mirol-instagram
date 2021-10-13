@@ -171,10 +171,10 @@ function getComments(req, res, next) {
 }
 
 function muteComments(req, res, next) {
-    if (!req.body.information.username || req.body.information.username === "" ||
-        !req.body.information.password || req.body.information.password === "" ||
-        !req.body.information.session || req.body.information.session === "" ||
-        !req.body.information.broadcast_id || req.body.information.broadcast_id === "") {
+    if (!req.body.username || req.body.username === "" ||
+        !req.body.password || req.body.password === "" ||
+        !req.body.session || req.body.session === "" ||
+        !req.body.broadcast_id || req.body.broadcast_id === "") {
         res.status(422).send({ 'message': 9 });
         return;
     }
@@ -208,10 +208,10 @@ function muteComments(req, res, next) {
 }
 
 function unmuteComments(req, res, next) {
-    if (!req.body.information.username || req.body.information.username === "" ||
-        !req.body.information.password || req.body.information.password === "" ||
-        !req.body.information.session || req.body.information.session === "" ||
-        !req.body.information.broadcast_id || req.body.information.broadcast_id === "") {
+    if (!req.body.username || req.body.username === "" ||
+        !req.body.password || req.body.password === "" ||
+        !req.body.session || req.body.session === "" ||
+        !req.body.broadcast_id || req.body.broadcast_id === "") {
         res.status(422).send({ 'message': 9 });
         return;
     }
@@ -256,12 +256,12 @@ function snedComment(req, res, next) {
         Bluebird.try(async () => {
 
             const ig = new instagram_private_api_1.IgApiClient();
-            ig.state.generateDevice(req.body.username);
-            let buff = Buffer.from(req.body.session, 'base64').toString('utf8');
+            ig.state.generateDevice(req.body.information.username);
+            let buff = Buffer.from(req.body.information.session, 'base64').toString('utf8');
             await ig.state.deserialize(buff);
             await ig.qe.syncLoginExperiments();
 
-            let comment = await ig.live.comment(req.body.broadcast_id, req.body.comment);
+            let comment = await ig.live.comment(req.body.information.broadcast_id, req.body.comment);
             res.send({ 'comment': comment.comment.pk });
 
         }).catch(instagram_private_api_1.IgLoginRequiredError, async () => {
@@ -293,12 +293,12 @@ function pinComment(req, res, next) {
         Bluebird.try(async () => {
 
             const ig = new instagram_private_api_1.IgApiClient();
-            ig.state.generateDevice(req.body.username);
-            let buff = Buffer.from(req.body.session, 'base64').toString('utf8');
+            ig.state.generateDevice(req.body.information.username);
+            let buff = Buffer.from(req.body.information.session, 'base64').toString('utf8');
             await ig.state.deserialize(buff);
             await ig.qe.syncLoginExperiments();
 
-            await ig.live.pinComment(req.body.broadcast_id, req.body.comment);
+            await ig.live.pinComment(req.body.information.broadcast_id, req.body.comment);
             res.send({ 'status': "ok" });
 
         }).catch(instagram_private_api_1.IgLoginRequiredError, async () => {
