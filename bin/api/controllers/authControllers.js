@@ -4,7 +4,7 @@ const instagram_private_api_1 = require("instagram-private-api");
 const Bluebird = require("bluebird");
 
 function login(req, res, next) {
-    if (!req.body.information.username || req.body.information.username === "" || !req.body.information.password || req.body.information.password === "") {
+    if (!req.body.username || req.body.username === "" || !req.body.password || req.body.password === "") {
         res.status(422).send({ 'message': 9 });
         return;
     }
