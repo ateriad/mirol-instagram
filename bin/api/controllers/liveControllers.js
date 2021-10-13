@@ -5,8 +5,14 @@ const { json } = require("body-parser");
 const Bluebird = require("bluebird");
 
 function start(req, res, next) {
+    if (!req.body.information.username || req.body.information.username === "" ||
+        !req.body.information.password || req.body.information.password === "" ||
+        !req.body.details.comment_status || req.body.details.comment_status === "") {
+        res.status(422).send({ 'message': 9 });
+        return;
+    }
     (async () => {
-        if (req.body.information.session!=null) {
+        if (req.body.information.session != null) {
             Bluebird.try(async () => {
 
                 let ig = new instagram_private_api_1.IgApiClient();
@@ -44,7 +50,7 @@ function start(req, res, next) {
                 await ig.state.generateDevice(req.body.information.username);
                 await ig.qe.syncLoginExperiments();
                 await ig.account.login(req.body.information.username, req.body.information.password);
-                
+
                 const { broadcast_id, upload_url } = await ig.live.create({
                     previewWidth: 720,
                     previewHeight: 1280,
@@ -57,8 +63,10 @@ function start(req, res, next) {
                 }
                 const state = await ig.state.serialize();
                 delete state.constants;
-                res.send({ 'broadcast_id': broadcast_id, 'stream_url': stream_url, 'stream_key': stream_key ,
-                'session': Buffer.from(JSON.stringify(state)).toString("base64")});
+                res.send({
+                    'broadcast_id': broadcast_id, 'stream_url': stream_url, 'stream_key': stream_key,
+                    'session': Buffer.from(JSON.stringify(state)).toString("base64")
+                });
 
             }).catch(instagram_private_api_1.IgLoginTwoFactorRequiredError, async err => {
                 res.status(400).send({ 'message': '1' });
@@ -80,12 +88,19 @@ function start(req, res, next) {
             ).catch(instagram_private_api_1.IgCheckpointError, async () => {
                 res.status(400).send({ 'message': '7 ' });
             }
-            ).catch(e => res.status(400).send({ 'message': '10' }));
+            ).catch(e => res.status(400).send({ 'message': '10 ' }));
         }
     })();
 }
 
 function stop(req, res, next) {
+    if (!req.body.information.username || req.body.information.username === "" ||
+        !req.body.information.password || req.body.information.password === "" ||
+        !req.body.information.session || req.body.information.session === "" ||
+        !req.body.information.broadcast_id || req.body.information.broadcast_id === "") {
+        res.status(422).send({ 'message': 9 });
+        return;
+    }
     (async () => {
         Bluebird.try(async () => {
 
@@ -97,7 +112,7 @@ function stop(req, res, next) {
 
             const live_info = await ig.live.endBroadcast(req.body.information.broadcast_id);
             let info = await ig.live.getFinalViewerList(req.body.information.broadcast_id);
-            res.send({ 'visitors_count': info.total_unique_viewer_count , 'session':req.body.information.session });
+            res.send({ 'visitors_count': info.total_unique_viewer_count, 'session': req.body.information.session });
 
         }).catch(instagram_private_api_1.IgLoginRequiredError, async () => {
             res.status(400).send({ 'message': '8' });
@@ -117,6 +132,13 @@ function stop(req, res, next) {
 }
 
 function getComments(req, res, next) {
+    if (!req.body.information.username || req.body.information.username === "" ||
+        !req.body.information.password || req.body.information.password === "" ||
+        !req.body.information.session || req.body.information.session === "" ||
+        !req.body.information.broadcast_id || req.body.information.broadcast_id === "") {
+        res.status(422).send({ 'message': 9 });
+        return;
+    }
     (async function () {
         Bluebird.try(async () => {
 
@@ -149,6 +171,13 @@ function getComments(req, res, next) {
 }
 
 function muteComments(req, res, next) {
+    if (!req.body.information.username || req.body.information.username === "" ||
+        !req.body.information.password || req.body.information.password === "" ||
+        !req.body.information.session || req.body.information.session === "" ||
+        !req.body.information.broadcast_id || req.body.information.broadcast_id === "") {
+        res.status(422).send({ 'message': 9 });
+        return;
+    }
     (async function () {
         Bluebird.try(async () => {
 
@@ -179,6 +208,13 @@ function muteComments(req, res, next) {
 }
 
 function unmuteComments(req, res, next) {
+    if (!req.body.information.username || req.body.information.username === "" ||
+        !req.body.information.password || req.body.information.password === "" ||
+        !req.body.information.session || req.body.information.session === "" ||
+        !req.body.information.broadcast_id || req.body.information.broadcast_id === "") {
+        res.status(422).send({ 'message': 9 });
+        return;
+    }
     (async function () {
         Bluebird.try(async () => {
 
@@ -209,6 +245,13 @@ function unmuteComments(req, res, next) {
 }
 
 function snedComment(req, res, next) {
+    if (!req.body.information.username || req.body.information.username === "" ||
+        !req.body.information.password || req.body.information.password === "" ||
+        !req.body.information.session || req.body.information.session === "" ||
+        !req.body.information.broadcast_id || req.body.information.broadcast_id === "") {
+        res.status(422).send({ 'message': 9 });
+        return;
+    }
     (async function () {
         Bluebird.try(async () => {
 
@@ -239,6 +282,13 @@ function snedComment(req, res, next) {
 }
 
 function pinComment(req, res, next) {
+    if (!req.body.information.username || req.body.information.username === "" ||
+        !req.body.information.password || req.body.information.password === "" ||
+        !req.body.information.session || req.body.information.session === "" ||
+        !req.body.information.broadcast_id || req.body.information.broadcast_id === "") {
+        res.status(422).send({ 'message': 9 });
+        return;
+    }
     (async function () {
         Bluebird.try(async () => {
 

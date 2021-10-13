@@ -4,6 +4,10 @@ const instagram_private_api_1 = require("instagram-private-api");
 const Bluebird = require("bluebird");
 
 function login(req, res, next) {
+    if (!req.body.information.username || req.body.information.username === "" || !req.body.information.password || req.body.information.password === "") {
+        res.status(422).send({ 'message': 9 });
+        return;
+    }
     (async () => {
         const ig = new instagram_private_api_1.IgApiClient();
 
@@ -14,7 +18,7 @@ function login(req, res, next) {
             await ig.account.login(req.body.username, req.body.password);
             const state = await ig.state.serialize();
             delete state.constants;
-            res.send({ 'session': Buffer.from(JSON.stringify(state)).toString("base64"),'2fa_required': false });
+            res.send({ 'session': Buffer.from(JSON.stringify(state)).toString("base64") });
 
         }).catch(instagram_private_api_1.IgLoginTwoFactorRequiredError, async err => {
             const state = await ig.state.serialize();
@@ -23,7 +27,7 @@ function login(req, res, next) {
             const verificationMethod = totp_two_factor_on ? '0' : '1';
 
             res.status(200).send({
-                '2fa_required': true, 'session': Buffer.from(JSON.stringify(state)).toString("base64"),
+                'session': Buffer.from(JSON.stringify(state)).toString("base64"),
                 'two_factor_identifier': two_factor_identifier, 'verificationMethod': verificationMethod
             });
         }).catch(instagram_private_api_1.IgLoginBadPasswordError, async () => {
@@ -54,21 +58,32 @@ function confirmChallenge(req, res, next) {
 }
 
 function confirmTf(req, res, next) {
+
+    if (!req.body.information.username || req.body.information.username === "" ||
+        !req.body.information.password || req.body.information.password === "" ||
+        !req.body.information.two_factor_identifier || req.body.information.two_factor_identifier === "" ||
+        !req.body.information.verificationMethod || req.body.information.verificationMethod === "" ||
+        !req.body.information.session || req.information.session === "" ||
+        !req.body.code || req.body.code === "") {
+        res.status(422).send({ 'message': 9 });
+        return;
+    }
+
     (async () => {
 
         Bluebird.try(async () => {
 
             const ig = new instagram_private_api_1.IgApiClient();
-            let username = req.body.username;
-            ig.state.generateDevice(req.body.username);
-            let buff = Buffer.from(req.body.session, 'base64').toString('utf8');
+            let username = req.body.information.username;
+            ig.state.generateDevice(req.body.information.username);
+            let buff = Buffer.from(req.body.information.session, 'base64').toString('utf8');
             await ig.state.deserialize(buff);
             await ig.qe.syncLoginExperiments();
             await ig.account.twoFactorLogin({
                 username,
                 verificationCode: req.body.code,
-                twoFactorIdentifier: req.body.two_factor_identifier,
-                verificationMethod: req.body.verificationMethod,
+                twoFactorIdentifier: req.body.information.two_factor_identifier,
+                verificationMethod: req.body.information.verificationMethod,
                 trustThisDevice: '1',
             });
             await ig.qe.syncLoginExperiments();
