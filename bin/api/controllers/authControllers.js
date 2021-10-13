@@ -77,26 +77,26 @@ function confirmTf(req, res, next) {
             res.send({ 'session': Buffer.from(JSON.stringify(state)).toString("base64") });
 
         }).catch(instagram_private_api_1.IgLoginTwoFactorRequiredError, async () => {
-            res.status(400).end({ 'message': 'ورود 2 مرحله ای' })
+            res.status(400).send({ 'message': '1' })
         }).catch(instagram_private_api_1.IgLoginBadPasswordError, async () => {
-            res.status(400).end({ 'message': 'رمزعبور اشتباه است' })
+            res.status(400).send({ 'message': '2' })
         }
         ).catch(instagram_private_api_1.IgLoginInvalidUserError, async () => {
-            res.status(400).end({ 'message': 'شناسه کاربری اشتباه است' });
+            res.status(400).send({ 'message': '3' });
         }
         ).catch(instagram_private_api_1.IgRequestsLimitError, async () => {
-            res.status(400).end({ 'message': 'درخواست بیش از حد مجاز' });
+            res.status(400).send({ 'message': '4' });
         }
         ).catch(instagram_private_api_1.IgNetworkError, async () => {
-            res.status(400).send({ 'message': 'بعد از چند ثانیه مجدد سعی کنید' });
+            res.status(400).send({ 'message': '5' });
         }
         ).catch(instagram_private_api_1.IgResponseError, async () => {
-            res.status(400).send({ 'message': 'خطا در دریافت پاسخ از اینستاگرام' });
+            res.status(400).send({ 'message': '6' });
         }
         ).catch(instagram_private_api_1.IgCheckpointError, async () => {
-            res.status(400).end({ 'message': 'خطای احراز هویت ' });
+            res.status(400).send({ 'message': '7' });
         }
-        ).catch(e => res.status(400).end({ 'message': 'خطای ناشناخته ' }));
+        ).catch(e => res.status(400).send({ 'message': '10' }));
 
     })();
 }

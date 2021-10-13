@@ -26,18 +26,18 @@ function start(req, res, next) {
                 }
                 res.send({ 'broadcast_id': broadcast_id, 'stream_url': stream_url, 'stream_key': stream_key });
             }).catch(instagram_private_api_1.IgLoginRequiredError, async () => {
-                res.status(400).send({ 'message': 'در قسمت کانال ها اطاعات ورود به اکانت را بروزرسانی کنید' });
+                res.status(400).send({ 'message': '8' });
             }
             ).catch(instagram_private_api_1.IgRequestsLimitError, async () => {
-                res.status(400).end({ 'message': 'درخواست بیش از حد مجاز' });
+                res.status(400).send({ 'message': '4' });
             }
             ).catch(instagram_private_api_1.IgNetworkError, async () => {
-                res.status(400).send({ 'message': 'بعد از چند ثانیه مجدد سعی کنید' });
+                res.status(400).send({ 'message': '5' });
             }
             ).catch(instagram_private_api_1.IgResponseError, async () => {
-                res.status(400).send({ 'message': 'بعد از چند ثانیه مجدد سعی کنید' });
+                res.status(400).send({ 'message': '6' });
             }
-            ).catch(e => res.status(400).send({ 'message': '1خطای ناشناخته' }));
+            ).catch(e => res.status(400).send({ 'message': '10' }));
         } else {
             Bluebird.try(async () => {
                 let ig = new instagram_private_api_1.IgApiClient();
@@ -80,7 +80,7 @@ function start(req, res, next) {
             ).catch(instagram_private_api_1.IgCheckpointError, async () => {
                 res.status(400).send({ 'message': '7 ' });
             }
-            ).catch(e => console.log(e));
+            ).catch(e => res.status(400).send({ 'message': '10' }));
         }
     })();
 }
@@ -90,20 +90,20 @@ function stop(req, res, next) {
         Bluebird.try(async () => {
 
             const ig = new instagram_private_api_1.IgApiClient();
-            ig.state.generateDevice(req.body.username);
-            let buff = Buffer.from(req.body.session, 'base64').toString('utf8');
+            ig.state.generateDevice(req.body.information.username);
+            let buff = Buffer.from(req.body.information.session, 'base64').toString('utf8');
             await ig.state.deserialize(buff);
             await ig.qe.syncLoginExperiments();
 
-            const live_info = await ig.live.endBroadcast(req.body.broadcast_id);
-            let info = await ig.live.getFinalViewerList(req.body.broadcast_id);
-            res.send({ 'visitors_count': info.total_unique_viewer_count , 'session':req.body.session });
+            const live_info = await ig.live.endBroadcast(req.body.information.broadcast_id);
+            let info = await ig.live.getFinalViewerList(req.body.information.broadcast_id);
+            res.send({ 'visitors_count': info.total_unique_viewer_count , 'session':req.body.information.session });
 
         }).catch(instagram_private_api_1.IgLoginRequiredError, async () => {
             res.status(400).send({ 'message': '8' });
         }
         ).catch(instagram_private_api_1.IgRequestsLimitError, async () => {
-            res.status(400).end({ 'message': '4' });
+            res.status(400).send({ 'message': '4' });
         }
         ).catch(instagram_private_api_1.IgNetworkError, async () => {
             res.status(400).send({ 'message': '5' });
@@ -111,7 +111,7 @@ function stop(req, res, next) {
         ).catch(instagram_private_api_1.IgResponseError, async () => {
             res.status(400).send({ 'message': '6' });
         }
-        ).catch(e => res.status(400).end({ 'message': '10 ' }));
+        ).catch(e => res.status(400).send({ 'message': '10' }));
 
     })();
 }
@@ -132,18 +132,18 @@ function getComments(req, res, next) {
             res.send({ 'comments': comments });
 
         }).catch(instagram_private_api_1.IgLoginRequiredError, async () => {
-            res.status(400).send({ 'message': 'در قسمت کانال ها اطاعات ورود به اکانت را بروزرسانی کنید' });
+            res.status(400).send({ 'message': '8' });
         }
         ).catch(instagram_private_api_1.IgRequestsLimitError, async () => {
-            res.status(400).end({ 'message': 'درخواست بیش از حد مجاز' });
+            res.status(400).send({ 'message': '4' });
         }
         ).catch(instagram_private_api_1.IgNetworkError, async () => {
-            res.status(400).send({ 'message': 'خطا در دریافت پاسخ از اینستاگرام' });
+            res.status(400).send({ 'message': '5' });
         }
         ).catch(instagram_private_api_1.IgResponseError, async () => {
-            res.status(400).send({ 'message': 'بعد از چند ثانیه مجدد سعی کنید' });
+            res.status(400).send({ 'message': '6' });
         }
-        ).catch(e => res.status(400).end({ 'message': 'خطای ناشناخته ' }));
+        ).catch(e => res.status(400).send({ 'message': '10' }));
 
     })();
 }
@@ -162,18 +162,18 @@ function muteComments(req, res, next) {
             res.send({ 'status': 'ok' });
 
         }).catch(instagram_private_api_1.IgLoginRequiredError, async () => {
-            res.status(400).send({ 'message': 'در قسمت کانال ها اطاعات ورود به اکانت را بروزرسانی کنید' });
+            res.status(400).send({ 'message': '8' });
         }
         ).catch(instagram_private_api_1.IgRequestsLimitError, async () => {
-            res.status(400).end({ 'message': 'درخواست بیش از حد مجاز' });
+            res.status(400).send({ 'message': '4' });
         }
         ).catch(instagram_private_api_1.IgNetworkError, async () => {
-            res.status(400).send({ 'message': 'خطا در دریافت پاسخ از اینستاگرام' });
+            res.status(400).send({ 'message': '5' });
         }
         ).catch(instagram_private_api_1.IgResponseError, async () => {
-            res.status(400).send({ 'message': 'بعد از چند ثانیه مجدد سعی کنید' });
+            res.status(400).send({ 'message': '6' });
         }
-        ).catch(e => res.status(400).end({ 'message': 'خطای ناشناخته ' }));
+        ).catch(e => res.status(400).send({ 'message': '10' }));
 
     })();
 }
@@ -192,18 +192,18 @@ function unmuteComments(req, res, next) {
             res.send({ 'status': 'ok' });
 
         }).catch(instagram_private_api_1.IgLoginRequiredError, async () => {
-            res.status(400).send({ 'message': 'در قسمت کانال ها اطاعات ورود به اکانت را بروزرسانی کنید' });
+            res.status(400).send({ 'message': '8' });
         }
         ).catch(instagram_private_api_1.IgRequestsLimitError, async () => {
-            res.status(400).end({ 'message': 'درخواست بیش از حد مجاز' });
+            res.status(400).send({ 'message': '4' });
         }
         ).catch(instagram_private_api_1.IgNetworkError, async () => {
-            res.status(400).send({ 'message': 'خطا در دریافت پاسخ از اینستاگرام' });
+            res.status(400).send({ 'message': '5' });
         }
         ).catch(instagram_private_api_1.IgResponseError, async () => {
-            res.status(400).send({ 'message': 'بعد از چند ثانیه مجدد سعی کنید' });
+            res.status(400).send({ 'message': '6' });
         }
-        ).catch(e => res.status(400).end({ 'message': 'خطای ناشناخته ' }));
+        ).catch(e => res.status(400).send({ 'message': '10' }));
 
     })();
 }
@@ -222,18 +222,18 @@ function snedComment(req, res, next) {
             res.send({ 'comment': comment.comment.pk });
 
         }).catch(instagram_private_api_1.IgLoginRequiredError, async () => {
-            res.status(400).send({ 'message': 'در قسمت کانال ها اطاعات ورود به اکانت را بروزرسانی کنید' });
+            res.status(400).send({ 'message': '8' });
         }
         ).catch(instagram_private_api_1.IgRequestsLimitError, async () => {
-            res.status(400).end({ 'message': 'درخواست بیش از حد مجاز' });
+            res.status(400).send({ 'message': '4' });
         }
         ).catch(instagram_private_api_1.IgNetworkError, async () => {
-            res.status(400).send({ 'message': 'خطا در دریافت پاسخ از اینستاگرام' });
+            res.status(400).send({ 'message': '5' });
         }
         ).catch(instagram_private_api_1.IgResponseError, async () => {
-            res.status(400).send({ 'message': 'بعد از چند ثانیه مجدد سعی کنید' });
+            res.status(400).send({ 'message': '6' });
         }
-        ).catch(e => res.status(400).end({ 'message': 'خطای ناشناخته ' }));
+        ).catch(e => res.status(400).send({ 'message': '10' }));
 
     })();
 }
@@ -252,18 +252,18 @@ function pinComment(req, res, next) {
             res.send({ 'status': "ok" });
 
         }).catch(instagram_private_api_1.IgLoginRequiredError, async () => {
-            res.status(400).send({ 'message': 'در قسمت کانال ها اطاعات ورود به اکانت را بروزرسانی کنید' });
+            res.status(400).send({ 'message': '8' });
         }
         ).catch(instagram_private_api_1.IgRequestsLimitError, async () => {
-            res.status(400).end({ 'message': 'درخواست بیش از حد مجاز' });
+            res.status(400).send({ 'message': '4' });
         }
         ).catch(instagram_private_api_1.IgNetworkError, async () => {
-            res.status(400).send({ 'message': 'خطا در دریافت پاسخ از اینستاگرام' });
+            res.status(400).send({ 'message': '5' });
         }
         ).catch(instagram_private_api_1.IgResponseError, async () => {
-            res.status(400).send({ 'message': 'بعد از چند ثانیه مجدد سعی کنید' });
+            res.status(400).send({ 'message': '6' });
         }
-        ).catch(e => res.status(400).end({ 'message': 'خطای ناشناخته ' }));
+        ).catch(e => res.status(400).send({ 'message': '10' }));
 
     })();
 }
