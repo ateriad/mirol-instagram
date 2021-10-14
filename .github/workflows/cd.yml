@@ -23,6 +23,6 @@ jobs:
           proxy_username: bastion
           proxy_key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            cd /srv/pages
+            cd /srv/instagram
             git reset --hard HEAD^
             git pull
