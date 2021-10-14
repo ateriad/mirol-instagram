@@ -1,0 +1,28 @@
+name: CD
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy
+        uses: appleboy/ssh-action@master
+        with:
+          host: 192.168.1.4
+          port: 22
+          username: root
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          proxy_host: 87.107.68.232
+          proxy_port: 13666
+          proxy_username: bastion
+          proxy_key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd /srv/pages
+            git reset --hard HEAD^
+            git pull
