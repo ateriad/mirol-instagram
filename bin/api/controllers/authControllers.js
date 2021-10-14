@@ -4,7 +4,7 @@ const instagram_private_api_1 = require("instagram-private-api");
 const Bluebird = require("bluebird");
 
 function login(req, res, next) {
-    if (!req.body.username || req.body.username === "" || !req.body.password || req.body.password === "") {
+    if (!req.body.information.username || req.body.information.username === "" || !req.body.information.password || req.body.information.password === "") {
         res.status(422).send({ 'message': 9 });
         return;
     }
@@ -13,9 +13,9 @@ function login(req, res, next) {
 
         Bluebird.try(async () => {
 
-            ig.state.generateDevice(req.body.username);
+            ig.state.generateDevice(req.body.information.username);
             await ig.qe.syncLoginExperiments();
-            await ig.account.login(req.body.username, req.body.password);
+            await ig.account.login(req.body.information.username, req.body.information.password);
             const state = await ig.state.serialize();
             delete state.constants;
             res.send({ 'session': Buffer.from(JSON.stringify(state)).toString("base64") });
