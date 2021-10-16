@@ -291,8 +291,8 @@ function pinComment(req, res, next) {
         return;
     }
     
-    let comment = JSON.parse(req.body.comment);
-    
+    let comment = JSON.parse(req.body.comment.comment);
+
     (async function () {
         Bluebird.try(async () => {
 
@@ -332,7 +332,7 @@ function unpinComment(req, res, next) {
         return;
     }
 
-    let comment = JSON.parse(req.body.comment);
+    let comment = JSON.parse(req.body.comment.comment);
 
     (async function () {
         Bluebird.try(async () => {
