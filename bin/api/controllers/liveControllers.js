@@ -290,6 +290,9 @@ function pinComment(req, res, next) {
         res.status(422).send({ 'message': 9 });
         return;
     }
+    
+    let comment = JSON.parse(req.body.comment);
+    
     (async function () {
         Bluebird.try(async () => {
 
@@ -299,7 +302,7 @@ function pinComment(req, res, next) {
             await ig.state.deserialize(buff);
             await ig.qe.syncLoginExperiments();
 
-            await ig.live.pinComment(req.body.channel.information.broadcast_id, req.body.comment.pk);
+            await ig.live.pinComment(req.body.channel.information.broadcast_id, comment.pk);
             res.send({ 'status': "ok" });
 
         }).catch(instagram_private_api_1.IgLoginRequiredError, async () => {
@@ -328,6 +331,9 @@ function unpinComment(req, res, next) {
         res.status(422).send({ 'message': 9 });
         return;
     }
+
+    let comment = JSON.parse(req.body.comment);
+
     (async function () {
         Bluebird.try(async () => {
 
@@ -337,7 +343,7 @@ function unpinComment(req, res, next) {
             await ig.state.deserialize(buff);
             await ig.qe.syncLoginExperiments();
 
-            await ig.live.pinComment(req.body.channel.information.broadcast_id, req.body.comment.pk);
+            await ig.live.unpinComment(req.body.channel.information.broadcast_id, comment.pk);
             res.send({ 'status': "ok" });
 
         }).catch(instagram_private_api_1.IgLoginRequiredError, async () => {
