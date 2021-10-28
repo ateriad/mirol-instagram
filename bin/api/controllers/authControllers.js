@@ -62,11 +62,11 @@ function confirmChallenge(req, res, next) {
 
 function confirmTf(req, res, next) {
 
-    if (!req.body.channel.information.username || req.body.channel.information.username === "" ||
-        !req.body.channel.information.password || req.body.channel.information.password === "" ||
-        !req.body.channel.information.two_factor_identifier || req.body.channel.information.two_factor_identifier === "" ||
-        !req.body.channel.information.verificationMethod || req.body.channel.information.verificationMethod === "" ||
-        !req.body.channel.information.session || req.body.channel.information.session === "" ||
+    if (!req.body.destination.information.username || req.body.destination.information.username === "" ||
+        !req.body.destination.information.password || req.body.destination.information.password === "" ||
+        !req.body.destination.information.two_factor_identifier || req.body.destination.information.two_factor_identifier === "" ||
+        !req.body.destination.information.verificationMethod || req.body.destination.information.verificationMethod === "" ||
+        !req.body.destination.information.session || req.body.destination.information.session === "" ||
         !req.body.code || req.body.code === "") {
         res.status(422).send({ 'message': 9 });
         return;
@@ -77,16 +77,16 @@ function confirmTf(req, res, next) {
         Bluebird.try(async () => {
 
             const ig = new instagram_private_api_1.IgApiClient();
-            let username = req.body.channel.information.username;
+            let username = req.body.destination.information.username;
             ig.state.generateDevice(username);
-            let buff = Buffer.from(req.body.channel.information.session, 'base64').toString('utf8');
+            let buff = Buffer.from(req.body.destination.information.session, 'base64').toString('utf8');
             await ig.state.deserialize(buff);
             await ig.qe.syncLoginExperiments();
             await ig.account.twoFactorLogin({
                 username,
                 verificationCode: req.body.code,
-                twoFactorIdentifier: req.body.channel.information.two_factor_identifier,
-                verificationMethod: req.body.channel.information.verificationMethod,
+                twoFactorIdentifier: req.body.destination.information.two_factor_identifier,
+                verificationMethod: req.body.destination.information.verificationMethod,
                 trustThisDevice: '1',
             });
             await ig.qe.syncLoginExperiments();
