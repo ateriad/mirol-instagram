@@ -131,11 +131,51 @@ function stop(req, res, next) {
     })();
 }
 
-function getComments(req, res, next) {
+function update(req, res, next) {
     if (!req.body.information.username || req.body.information.username === "" ||
         !req.body.information.password || req.body.information.password === "" ||
         !req.body.information.session || req.body.information.session === "" ||
         !req.body.information.broadcast_id || req.body.information.broadcast_id === "") {
+        res.status(422).send({ 'message': 9 });
+        return;
+    }
+    (async function () {
+        Bluebird.try(async () => {
+
+            const ig = new instagram_private_api_1.IgApiClient();
+            ig.state.generateDevice(req.body.information.username);
+            let buff = Buffer.from(req.body.information.session, 'base64').toString('utf8');
+            await ig.state.deserialize(buff);
+            await ig.qe.syncLoginExperiments();
+
+            if (req.body.details.comment_status == 1)
+                await ig.live.unmuteComments(req.body.information.broadcast_id);
+            else if (req.body.details.comment_status == 2)
+                await ig.live.muteComment(req.body.information.broadcast_id);
+
+            res.send({ 'status': 'ok' });
+        }).catch(instagram_private_api_1.IgLoginRequiredError, async () => {
+            res.status(400).send({ 'message': '8' });
+        }
+        ).catch(instagram_private_api_1.IgRequestsLimitError, async () => {
+            res.status(400).send({ 'message': '4' });
+        }
+        ).catch(instagram_private_api_1.IgNetworkError, async () => {
+            res.status(400).send({ 'message': '5' });
+        }
+        ).catch(instagram_private_api_1.IgResponseError, async () => {
+            res.status(400).send({ 'message': '6' });
+        }
+        ).catch(e => res.status(400).send({ 'message': '10' }));
+
+    })();
+}
+
+function getComments(req, res, next) {
+    if (!req.body.destination.information.username || req.body.destination.information.username === "" ||
+        !req.body.destination.information.password || req.body.destination.information.password === "" ||
+        !req.body.destination.information.session || req.body.destination.information.session === "" ||
+        !req.body.destination.information.broadcast_id || req.body.destination.information.broadcast_id === "") {
         res.status(422).send({ 'message': 9 });
         return;
     }
@@ -148,84 +188,10 @@ function getComments(req, res, next) {
             await ig.state.deserialize(buff);
             await ig.qe.syncLoginExperiments();
             let broadcastId = req.body.information.broadcast_id;
-            let lastCommentTs = req.body.information.last_comment;
+            let lastCommentTs = req.body.comment.comment.created_at;
             let commentsRequested = 10;
             let { comments } = await ig.live.getComment({ broadcastId, commentsRequested, lastCommentTs });
             res.send({ 'comments': comments });
-
-        }).catch(instagram_private_api_1.IgLoginRequiredError, async () => {
-            res.status(400).send({ 'message': '8' });
-        }
-        ).catch(instagram_private_api_1.IgRequestsLimitError, async () => {
-            res.status(400).send({ 'message': '4' });
-        }
-        ).catch(instagram_private_api_1.IgNetworkError, async () => {
-            res.status(400).send({ 'message': '5' });
-        }
-        ).catch(instagram_private_api_1.IgResponseError, async () => {
-            res.status(400).send({ 'message': '6' });
-        }
-        ).catch(e => res.status(400).send({ 'message': '10' }));
-
-    })();
-}
-
-function muteComments(req, res, next) {
-    if (!req.body.information.username || req.body.information.username === "" ||
-        !req.body.information.password || req.body.information.password === "" ||
-        !req.body.information.session || req.body.information.session === "" ||
-        !req.body.information.broadcast_id || req.body.information.broadcast_id === "") {
-        res.status(422).send({ 'message': 9 });
-        return;
-    }
-    (async function () {
-        Bluebird.try(async () => {
-
-            const ig = new instagram_private_api_1.IgApiClient();
-            ig.state.generateDevice(req.body.information.username);
-            let buff = Buffer.from(req.body.information.session, 'base64').toString('utf8');
-            await ig.state.deserialize(buff);
-            await ig.qe.syncLoginExperiments();
-
-            await ig.live.muteComment(req.body.information.broadcast_id);
-            res.send({ 'status': 'ok' });
-
-        }).catch(instagram_private_api_1.IgLoginRequiredError, async () => {
-            res.status(400).send({ 'message': '8' });
-        }
-        ).catch(instagram_private_api_1.IgRequestsLimitError, async () => {
-            res.status(400).send({ 'message': '4' });
-        }
-        ).catch(instagram_private_api_1.IgNetworkError, async () => {
-            res.status(400).send({ 'message': '5' });
-        }
-        ).catch(instagram_private_api_1.IgResponseError, async () => {
-            res.status(400).send({ 'message': '6' });
-        }
-        ).catch(e => res.status(400).send({ 'message': '10' }));
-
-    })();
-}
-
-function unmuteComments(req, res, next) {
-    if (!req.body.information.username || req.body.information.username === "" ||
-        !req.body.information.password || req.body.information.password === "" ||
-        !req.body.information.session || req.body.information.session === "" ||
-        !req.body.information.broadcast_id || req.body.information.broadcast_id === "") {
-        res.status(422).send({ 'message': 9 });
-        return;
-    }
-    (async function () {
-        Bluebird.try(async () => {
-
-            const ig = new instagram_private_api_1.IgApiClient();
-            ig.state.generateDevice(req.body.information.username);
-            let buff = Buffer.from(req.body.information.session, 'base64').toString('utf8');
-            await ig.state.deserialize(buff);
-            await ig.qe.syncLoginExperiments();
-
-            await ig.live.unmuteComment(req.body.information.broadcast_id);
-            res.send({ 'status': 'ok' });
 
         }).catch(instagram_private_api_1.IgLoginRequiredError, async () => {
             res.status(400).send({ 'message': '8' });
@@ -361,9 +327,8 @@ function unpinComment(req, res, next) {
 module.exports = {
     start,
     stop,
+    update,
     getComments,
-    muteComments,
-    unmuteComments,
     pinComment,
     unpinComment,
     snedComment

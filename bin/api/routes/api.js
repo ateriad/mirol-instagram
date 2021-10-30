@@ -11,9 +11,8 @@ module.exports = () => {
   // 
   router.post('/live/start', liveControllers.start.bind());
   router.post('/live/stop', liveControllers.stop.bind());
+  router.post('/live/update', liveControllers.update.bind());
   router.post('/live/comments', liveControllers.getComments.bind());
-  router.post('/live/comments/mute', liveControllers.muteComments.bind());
-  router.post('/live/comments/unmute', liveControllers.unmuteComments.bind());
   router.post('/live/comments/send', liveControllers.snedComment.bind());
   router.post('/live/comments/pin', liveControllers.pinComment.bind());
   router.post('/live/comments/unpin', liveControllers.unpinComment.bind());
