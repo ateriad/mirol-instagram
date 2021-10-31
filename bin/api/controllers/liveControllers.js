@@ -188,7 +188,7 @@ function getComments(req, res, next) {
             await ig.state.deserialize(buff);
             await ig.qe.syncLoginExperiments();
             let broadcastId = req.body.information.broadcast_id;
-            let lastCommentTs = req.body.comment.comment.created_at;
+            let lastCommentTs = (req.body.comment.comment ? req.body.comment.comment.created_at:0);
             let commentsRequested = 10;
             let { comments } = await ig.live.getComment({ broadcastId, commentsRequested, lastCommentTs });
             res.send({ 'comments': comments });
