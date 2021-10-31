@@ -183,12 +183,12 @@ function getComments(req, res, next) {
         Bluebird.try(async () => {
 
             const ig = new instagram_private_api_1.IgApiClient();
-            ig.state.generateDevice(req.body.information.username);
-            let buff = Buffer.from(req.body.information.session, 'base64').toString('utf8');
+            ig.state.generateDevice(req.body.destination.information.username);
+            let buff = Buffer.from(req.body.destination.information.session, 'base64').toString('utf8');
             await ig.state.deserialize(buff);
             await ig.qe.syncLoginExperiments();
-            let broadcastId = req.body.information.broadcast_id;
-            let lastCommentTs = (req.body.comment.comment ? req.body.comment.comment.created_at:0);
+            let broadcastId = req.body.destination.information.broadcast_id;
+            let lastCommentTs = (req.body.destination.comment.comment ? req.body.destination.comment.comment.created_at:0);
             let commentsRequested = 10;
             let { comments } = await ig.live.getComment({ broadcastId, commentsRequested, lastCommentTs });
             res.send({ 'comments': comments });
