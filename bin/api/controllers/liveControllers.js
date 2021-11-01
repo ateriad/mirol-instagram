@@ -30,7 +30,7 @@ function start(req, res, next) {
                 if (req.body.details.comment_status == 2) {
                     await ig.live.muteComment(broadcast_id);
                 }
-                res.send({ 'broadcast_id': broadcast_id, 'stream_url': stream_url, 'stream_key': stream_key });
+                res.send({ 'broadcast_id': broadcast_id, 'program_url': stream_url, 'program_key': stream_key });
             }).catch(instagram_private_api_1.IgLoginRequiredError, async () => {
                 res.status(400).send({ 'message': '8' });
             }
