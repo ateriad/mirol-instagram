@@ -64,7 +64,7 @@ function start(req, res, next) {
                 const state = await ig.state.serialize();
                 delete state.constants;
                 res.send({
-                    'broadcast_id': broadcast_id, 'program_url': stream_url, 'program_key': stream_key,
+                    'broadcast_id': broadcast_id, 'program_url': stream_url, 'program_key':  stream_key,
                     'session': Buffer.from(JSON.stringify(state)).toString("base64")
                 });
 
