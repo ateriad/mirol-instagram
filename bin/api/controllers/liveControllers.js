@@ -149,7 +149,7 @@ function update(req, res, next) {
             await ig.qe.syncLoginExperiments();
 
             if (req.body.details.comment_status == 1)
-                await ig.live.unmuteComments(req.body.information.broadcast_id);
+                await ig.live.unmuteComment(req.body.information.broadcast_id);
             else if (req.body.details.comment_status == 2)
                 await ig.live.muteComment(req.body.information.broadcast_id);
 
