@@ -86,9 +86,12 @@ function start(req, res, next) {
                 res.status(400).send({ 'message': '6' });
             }
             ).catch(instagram_private_api_1.IgCheckpointError, async () => {
-                res.status(400).send({ 'message': '7 ' });
+                res.status(400).send({ 'message': '7' });
             }
-            ).catch(e => res.status(400).send({ 'message': '10 ' }));
+            ).catch(instagram_private_api_1.IgActionSpamError, async () => {
+                res.status(400).send({ 'message': '11' });
+            }
+            ).catch(e => res.status(400).send({ 'message': '10' }));
         }
     })();
 }
