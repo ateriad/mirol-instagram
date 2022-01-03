@@ -37,6 +37,9 @@ function start(req, res, next) {
             ).catch(instagram_private_api_1.IgRequestsLimitError, async () => {
                 res.status(400).send({ 'message': '4' });
             }
+            ).catch(instagram_private_api_1.IgActionSpamError, async () => {
+                res.status(400).send({ 'message': '11' });
+            }
             ).catch(instagram_private_api_1.IgNetworkError, async () => {
                 res.status(400).send({ 'message': '5' });
             }
@@ -78,6 +81,9 @@ function start(req, res, next) {
             }
             ).catch(instagram_private_api_1.IgRequestsLimitError, async () => {
                 res.status(400).send({ 'message': '4' });
+            }
+            ).catch(instagram_private_api_1.IgActionSpamError, async () => {
+                res.status(400).send({ 'message': '11' });
             }
             ).catch(instagram_private_api_1.IgNetworkError, async () => {
                 res.status(400).send({ 'message': '5' });
