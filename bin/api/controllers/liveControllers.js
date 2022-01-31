@@ -352,8 +352,8 @@ function getViewers(req, res, next) {
             await ig.state.deserialize(buff);
             await ig.qe.syncLoginExperiments();
 
-            let list = await ig.live.getViewerList(req.body.destination.information.broadcast_id, req.body.comment.comment.pk);
-            res.send({ 'viewers': list });
+            let {users} = await ig.live.getViewerList(req.body.destination.information.broadcast_id);
+            res.send({ 'viewers': users });
 
         }).catch(instagram_private_api_1.IgLoginRequiredError, async () => {
             res.status(400).send({ 'message': '8' });
