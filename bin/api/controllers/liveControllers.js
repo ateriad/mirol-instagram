@@ -333,6 +333,45 @@ function unpinComment(req, res, next) {
 
     })();
 }
+
+function getViewers(req, res, next) {
+    if (!req.body.destination.information.username || req.body.destination.information.username === "" ||
+        !req.body.destination.information.password || req.body.destination.information.password === "" ||
+        !req.body.destination.information.session || req.body.destination.information.session === "" ||
+        !req.body.destination.information.broadcast_id || req.body.destination.information.broadcast_id === "") {
+        res.status(422).send({ 'message': 9 });
+        return;
+    }
+
+    (async function () {
+        Bluebird.try(async () => {
+
+            const ig = new instagram_private_api_1.IgApiClient();
+            ig.state.generateDevice(req.body.destination.information.username);
+            let buff = Buffer.from(req.body.destination.information.session, 'base64').toString('utf8');
+            await ig.state.deserialize(buff);
+            await ig.qe.syncLoginExperiments();
+
+            let list = await ig.live.getViewerList(req.body.destination.information.broadcast_id, req.body.comment.comment.pk);
+            res.send({ 'viewers': list });
+
+        }).catch(instagram_private_api_1.IgLoginRequiredError, async () => {
+            res.status(400).send({ 'message': '8' });
+        }
+        ).catch(instagram_private_api_1.IgRequestsLimitError, async () => {
+            res.status(400).send({ 'message': '4' });
+        }
+        ).catch(instagram_private_api_1.IgNetworkError, async () => {
+            res.status(400).send({ 'message': '5' });
+        }
+        ).catch(instagram_private_api_1.IgResponseError, async () => {
+            res.status(400).send({ 'message': '6' });
+        }
+        ).catch(e => res.status(400).send({ 'message': '10' }));
+
+    })();
+}
+
 module.exports = {
     start,
     stop,
@@ -340,5 +379,6 @@ module.exports = {
     getComments,
     pinComment,
     unpinComment,
-    snedComment
+    snedComment ,
+    getViewers
 };

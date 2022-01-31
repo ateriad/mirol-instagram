@@ -16,6 +16,7 @@ module.exports = () => {
   router.post('/live/comments/send', liveControllers.snedComment.bind());
   router.post('/live/comments/pin', liveControllers.pinComment.bind());
   router.post('/live/comments/unpin', liveControllers.unpinComment.bind());
+  router.post('/live/viewers', liveControllers.getViewers.bind());
 
   return router;
 };
