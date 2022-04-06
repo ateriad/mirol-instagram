@@ -104,7 +104,6 @@ function start(req, res, next) {
 
 function stop(req, res, next) {
     if (!req.body.information.username || req.body.information.username === "" ||
-        !req.body.information.password || req.body.information.password === "" ||
         !req.body.information.session || req.body.information.session === "" ||
         !req.body.information.broadcast_id || req.body.information.broadcast_id === "") {
         res.status(422).send({ 'message': 9 });
@@ -123,19 +122,7 @@ function stop(req, res, next) {
             let info = await ig.live.getFinalViewerList(req.body.information.broadcast_id);
             res.send({ 'visitors_count': info.total_unique_viewer_count, 'session': req.body.information.session });
 
-        }).catch(instagram_private_api_1.IgLoginRequiredError, async () => {
-            res.status(400).send({ 'message': '8' });
-        }
-        ).catch(instagram_private_api_1.IgRequestsLimitError, async () => {
-            res.status(400).send({ 'message': '4' });
-        }
-        ).catch(instagram_private_api_1.IgNetworkError, async () => {
-            res.status(400).send({ 'message': '5' });
-        }
-        ).catch(instagram_private_api_1.IgResponseError, async () => {
-            res.status(400).send({ 'message': '6' });
-        }
-        ).catch(e => res.status(400).send({ 'message': '10' }));
+        }).catch(e => res.status(400).send({ 'message': '9' }));
 
     })();
 }
