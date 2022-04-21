@@ -51,7 +51,6 @@ function start(req, res, next) {
             Bluebird.try(async () => {
                 let ig = new instagram_private_api_1.IgApiClient();
                 await ig.state.generateDevice(req.body.information.username);
-                await ig.qe.syncLoginExperiments();
                 await ig.account.login(req.body.information.username, req.body.information.password);
 
                 const { broadcast_id, upload_url } = await ig.live.create({
@@ -114,9 +113,7 @@ function stop(req, res, next) {
 
             const ig = new instagram_private_api_1.IgApiClient();
             ig.state.generateDevice(req.body.information.username);
-            let buff = Buffer.from(req.body.information.session, 'base64').toString('utf8');
-            await ig.state.deserialize(buff);
-            await ig.qe.syncLoginExperiments();
+            await ig.account.login(req.body.information.username, req.body.information.password);
 
             const live_info = await ig.live.endBroadcast(req.body.information.broadcast_id);
             let info = await ig.live.getFinalViewerList(req.body.information.broadcast_id);
