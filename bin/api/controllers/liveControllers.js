@@ -27,9 +27,9 @@ function start(req, res, next) {
                 });
                 const { stream_key, stream_url } = instagram_private_api_1.LiveEntity.getUrlAndKey({ broadcast_id, upload_url });
                 const startInfo = await ig.live.start(broadcast_id);
-                // if (req.body.details.comment_status == 2) {
-                //     await ig.live.muteComment(broadcast_id);
-                // }
+                if (req.body.details.comment_status == 2) {
+                    await ig.live.muteComment(broadcast_id);
+                }
                 res.send({ 'broadcast_id': broadcast_id, 'stream_url': stream_url, 'stream_key': stream_key });
             }).catch(instagram_private_api_1.IgLoginRequiredError, async () => {
                 res.status(400).send({ 'message': '8' });
