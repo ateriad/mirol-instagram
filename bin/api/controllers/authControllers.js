@@ -5,7 +5,7 @@ const Bluebird = require("bluebird");
 
 function login(req, res, next) {
     if (!req.body.information.username || req.body.information.username === "" ||
-     !req.body.information.password || req.body.information.password === "") {
+        !req.body.information.password || req.body.information.password === "") {
         res.status(422).send({ 'message': 9 });
         return;
     }
@@ -119,8 +119,26 @@ function confirmTf(req, res, next) {
     })();
 }
 
+function logout(req, res, next) {
+    (async function () {
+        try {
+            let ig = new instagram_private_api_1.IgApiClient();
+            await ig.state.generateDevice(req.body.information.username);
+            let buff = Buffer.from(req.body.information.session, 'base64').toString('utf8');
+            await ig.state.deserialize(buff);
+            await ig.qe.syncLoginExperiments();
+
+            await ig.account.logout();
+            res.status(204).send();
+        } catch (e) {
+            res.status(400).send({ 'message': '10' });
+        }
+    });
+}
+
 module.exports = {
     login,
+    logout,
     confirmChallenge,
     confirmTf
 };

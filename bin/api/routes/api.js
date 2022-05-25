@@ -5,6 +5,8 @@ const liveControllers = require('../controllers/liveControllers');
 module.exports = () => {
   let router = express.Router();
   router.post('/login', authControllers.login.bind());
+  router.post('/logout', authControllers.logout.bind());
+
   router.post('/challenge', authControllers.confirmChallenge.bind());
   router.post('/twofactor', authControllers.confirmTf.bind());
 
