@@ -6,7 +6,6 @@ const Bluebird = require("bluebird");
 
 function start(req, res, next) {
     if (!req.body.information.username || req.body.information.username === "" ||
-        !req.body.information.password || req.body.information.password === "" ||
         !req.body.details.comment_status || req.body.details.comment_status === "") {
         res.status(422).send({ 'message': 9 });
         return;
@@ -47,57 +46,8 @@ function start(req, res, next) {
                 res.status(400).send({ 'message': '6' });
             }
             ).catch(e => res.status(400).send({ 'message': '10' }));
-        } else {
-            Bluebird.try(async () => {
-                let ig = new instagram_private_api_1.IgApiClient();
-                await ig.state.generateDevice(req.body.information.username);
-                await ig.qe.syncLoginExperiments();
-                await ig.account.login(req.body.information.username, req.body.information.password);
-
-                const { broadcast_id, upload_url } = await ig.live.create({
-                    previewWidth: 720,
-                    previewHeight: 1280,
-                    message: req.body.information.username,
-                });
-                const { stream_key, stream_url } = instagram_private_api_1.LiveEntity.getUrlAndKey({ broadcast_id, upload_url });
-                const startInfo = await ig.live.start(broadcast_id);
-                if (req.body.details.comment_status == 2) {
-                    await ig.live.muteComment(broadcast_id);
-                }
-                const state = await ig.state.serialize();
-                delete state.constants;
-                res.send({
-                    'broadcast_id': broadcast_id, 'stream_url': stream_url, 'stream_key':  stream_key,
-                    'session': Buffer.from(JSON.stringify(state)).toString("base64")
-                });
-
-            }).catch(instagram_private_api_1.IgLoginTwoFactorRequiredError, async err => {
-                res.status(400).send({ 'message': '1' });
-            }).catch(instagram_private_api_1.IgLoginBadPasswordError, async () => {
-                res.status(400).send({ 'message': '2' });
-            }
-            ).catch(instagram_private_api_1.IgLoginInvalidUserError, async () => {
-                res.status(400).send({ 'message': '3' });
-            }
-            ).catch(instagram_private_api_1.IgRequestsLimitError, async () => {
-                res.status(400).send({ 'message': '4' });
-            }
-            ).catch(instagram_private_api_1.IgActionSpamError, async () => {
-                res.status(400).send({ 'message': '11' });
-            }
-            ).catch(instagram_private_api_1.IgNetworkError, async () => {
-                res.status(400).send({ 'message': '5' });
-            }
-            ).catch(instagram_private_api_1.IgResponseError, async () => {
-                res.status(400).send({ 'message': '6' });
-            }
-            ).catch(instagram_private_api_1.IgCheckpointError, async () => {
-                res.status(400).send({ 'message': '7' });
-            }
-            ).catch(instagram_private_api_1.IgActionSpamError, async () => {
-                res.status(400).send({ 'message': '11' });
-            }
-            ).catch(e => res.status(400).send({ 'message': '10' }));
+        }else{
+            res.status(422).send({ 'message': 9 });
         }
     })();
 }
@@ -129,7 +79,6 @@ function stop(req, res, next) {
 
 function update(req, res, next) {
     if (!req.body.information.username || req.body.information.username === "" ||
-        !req.body.information.password || req.body.information.password === "" ||
         !req.body.information.session || req.body.information.session === "" ||
         !req.body.information.broadcast_id || req.body.information.broadcast_id === "") {
         res.status(422).send({ 'message': 9 });
@@ -169,8 +118,8 @@ function update(req, res, next) {
 
 function getComments(req, res, next) {
     if (!req.body.destination.information.username || req.body.destination.information.username === "" ||
-        !req.body.destination.information.password || req.body.destination.information.password === "" ||
-        !req.body.destination.information.session || req.body.destination.information.session === "" ||
+
+    !req.body.destination.information.session || req.body.destination.information.session === "" ||
         !req.body.destination.information.broadcast_id || req.body.destination.information.broadcast_id === "") {
         res.status(422).send({ 'message': 9 });
         return;
@@ -208,8 +157,8 @@ function getComments(req, res, next) {
 
 function snedComment(req, res, next) {
     if (!req.body.destination.information.username || req.body.destination.information.username === "" ||
-        !req.body.destination.information.password || req.body.destination.information.password === "" ||
-        !req.body.destination.information.session || req.body.destination.information.session === "" ||
+
+    !req.body.destination.information.session || req.body.destination.information.session === "" ||
         !req.body.destination.information.broadcast_id || req.body.destination.information.broadcast_id === "") {
         res.status(422).send({ 'message': 9 });
         return;
@@ -245,8 +194,8 @@ function snedComment(req, res, next) {
 
 function pinComment(req, res, next) {
     if (!req.body.destination.information.username || req.body.destination.information.username === "" ||
-        !req.body.destination.information.password || req.body.destination.information.password === "" ||
-        !req.body.destination.information.session || req.body.destination.information.session === "" ||
+
+    !req.body.destination.information.session || req.body.destination.information.session === "" ||
         !req.body.destination.information.broadcast_id || req.body.destination.information.broadcast_id === "" ||
         !req.body.comment || req.body.comment === "") {
         res.status(422).send({ 'message': 9 });
@@ -284,8 +233,8 @@ function pinComment(req, res, next) {
 
 function unpinComment(req, res, next) {
     if (!req.body.destination.information.username || req.body.destination.information.username === "" ||
-        !req.body.destination.information.password || req.body.destination.information.password === "" ||
-        !req.body.destination.information.session || req.body.destination.information.session === "" ||
+
+    !req.body.destination.information.session || req.body.destination.information.session === "" ||
         !req.body.destination.information.broadcast_id || req.body.destination.information.broadcast_id === "" ||
         !req.body.comment || req.body.comment === "") {
         res.status(422).send({ 'message': 9 });
@@ -323,8 +272,8 @@ function unpinComment(req, res, next) {
 
 function getViewers(req, res, next) {
     if (!req.body.destination.information.username || req.body.destination.information.username === "" ||
-        !req.body.destination.information.password || req.body.destination.information.password === "" ||
-        !req.body.destination.information.session || req.body.destination.information.session === "" ||
+
+    !req.body.destination.information.session || req.body.destination.information.session === "" ||
         !req.body.destination.information.broadcast_id || req.body.destination.information.broadcast_id === "") {
         res.status(422).send({ 'message': 9 });
         return;
