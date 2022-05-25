@@ -120,7 +120,7 @@ function confirmTf(req, res, next) {
 }
 
 function logout(req, res, next) {
-    (async function () {
+    (async () => {
         try {
             let ig = new instagram_private_api_1.IgApiClient();
             await ig.state.generateDevice(req.body.information.username);
@@ -133,7 +133,7 @@ function logout(req, res, next) {
         } catch (e) {
             res.status(400).send({ 'message': '10' });
         }
-    });
+    })();
 }
 
 module.exports = {
