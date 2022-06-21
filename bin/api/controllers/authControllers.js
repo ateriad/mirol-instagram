@@ -63,10 +63,8 @@ function confirmChallenge(req, res, next) {
 function confirmTf(req, res, next) {
 
     if (!req.body.destination.information.username || req.body.destination.information.username === "" ||
-        !req.body.destination.information.password || req.body.destination.information.password === "" ||
         !req.body.destination.information.two_factor_identifier || req.body.destination.information.two_factor_identifier === "" ||
         !req.body.destination.information.verificationMethod || req.body.destination.information.verificationMethod === "" ||
-        !req.body.destination.information.session || req.body.destination.information.session === "" ||
         !req.body.code || req.body.code === "") {
         res.status(422).send({ 'message': 9 });
         return;
