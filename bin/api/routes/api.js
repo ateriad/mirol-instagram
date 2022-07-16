@@ -20,7 +20,7 @@ module.exports = () => {
   router.post('/live/comments/unpin', liveControllers.unpinComment.bind());
   router.post('/live/viewers', liveControllers.getViewers.bind());
 
-  router.get('/health-check', authControllers.healthCheck.bind(context));
+  router.get('/health-check', authControllers.healthCheck.bind());
 
   return router;
 };
