@@ -22,6 +22,10 @@ app.all('*', (req, res, next) => {
 //let context = new session();
 app.use('/api/v2',jsonParser, apiRoute());
 
+app.get('/health-check', (req, res, next) => {
+    res.json({ message: 'ok' });
+  });
+  
 // app.post('/api/v2/live/start', jsonParser, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 //     try {
 //         const ig = new instagram_private_api_1.IgApiClient();

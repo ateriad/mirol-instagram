@@ -15,12 +15,9 @@ module.exports = () => {
   router.post('/live/stop', liveControllers.stop.bind());
   router.post('/live/update', liveControllers.update.bind());
   router.post('/live/comments', liveControllers.getComments.bind());
-  router.post('/live/comments/send', liveControllers.snedComment.bind());
+  router.post('/live/comments/send', liveControllers.sendComment.bind());
   router.post('/live/comments/pin', liveControllers.pinComment.bind());
   router.post('/live/comments/unpin', liveControllers.unpinComment.bind());
   router.post('/live/viewers', liveControllers.getViewers.bind());
-
-  router.get('/health-check', authControllers.healthCheck.bind());
-
   return router;
 };

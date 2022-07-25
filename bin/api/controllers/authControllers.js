@@ -134,14 +134,9 @@ function logout(req, res, next) {
     })();
 }
 
-function healthCheck(req, res, next) {
-    res.json({ message: 'ok' });
-}
-
 module.exports = {
     login,
     logout,
     confirmChallenge,
-    confirmTf,
-    healthCheck
+    confirmTf
 };

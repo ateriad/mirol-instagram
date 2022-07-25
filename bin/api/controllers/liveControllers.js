@@ -155,7 +155,7 @@ function getComments(req, res, next) {
     })();
 }
 
-function snedComment(req, res, next) {
+function sendComment(req, res, next) {
     if (!req.body.destination.information.username || req.body.destination.information.username === "" ||
 
     !req.body.destination.information.session || req.body.destination.information.session === "" ||
@@ -315,6 +315,6 @@ module.exports = {
     getComments,
     pinComment,
     unpinComment,
-    snedComment ,
+    sendComment ,
     getViewers
 };
