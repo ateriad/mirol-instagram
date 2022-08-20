@@ -5,7 +5,7 @@ const { json } = require("body-parser");
 const Bluebird = require("bluebird");
 
 function start(req, res, next) {
-    if (!req.body.information.username || req.body.information.username === "" ||
+    if (!req.body.details.username || req.body.details.username === "" ||
         !req.body.details.comment_status || req.body.details.comment_status === "") {
         res.status(422).send({ 'message': 9 });
         return;
@@ -15,14 +15,14 @@ function start(req, res, next) {
             Bluebird.try(async () => {
 
                 let ig = new instagram_private_api_1.IgApiClient();
-                await ig.state.generateDevice(req.body.information.username);
+                await ig.state.generateDevice(req.body.details.username);
                 let buff = Buffer.from(req.body.information.session, 'base64').toString('utf8');
                 await ig.state.deserialize(buff);
                 await ig.qe.syncLoginExperiments();
                 const { broadcast_id, upload_url } = await ig.live.create({
                     previewWidth: 720,
                     previewHeight: 1280,
-                    message: req.body.information.username,
+                    message: req.body.details.username,
                 });
                 const { stream_key, stream_url } = instagram_private_api_1.LiveEntity.getUrlAndKey({ broadcast_id, upload_url });
                 const startInfo = await ig.live.start(broadcast_id);
@@ -53,7 +53,7 @@ function start(req, res, next) {
 }
 
 function stop(req, res, next) {
-    if (!req.body.information.username || req.body.information.username === "" ||
+    if (!req.body.details.username || req.body.details.username === "" ||
         !req.body.information.session || req.body.information.session === "" ||
         !req.body.details.broadcast_id || req.body.details.broadcast_id === "") {
         res.status(422).send({ 'message': 9 });
@@ -63,7 +63,7 @@ function stop(req, res, next) {
         Bluebird.try(async () => {
 
             const ig = new instagram_private_api_1.IgApiClient();
-            ig.state.generateDevice(req.body.information.username);
+            ig.state.generateDevice(req.body.details.username);
             let buff = Buffer.from(req.body.information.session, 'base64').toString('utf8');
             await ig.state.deserialize(buff);
             await ig.qe.syncLoginExperiments();
@@ -78,7 +78,7 @@ function stop(req, res, next) {
 }
 
 function update(req, res, next) {
-    if (!req.body.information.username || req.body.information.username === "" ||
+    if (!req.body.details.username || req.body.details.username === "" ||
         !req.body.information.session || req.body.information.session === "" ||
         !req.body.details.broadcast_id || req.body.details.broadcast_id === "") {
         res.status(422).send({ 'message': 9 });
@@ -88,7 +88,7 @@ function update(req, res, next) {
         Bluebird.try(async () => {
 
             const ig = new instagram_private_api_1.IgApiClient();
-            ig.state.generateDevice(req.body.information.username);
+            ig.state.generateDevice(req.body.details.username);
             let buff = Buffer.from(req.body.information.session, 'base64').toString('utf8');
             await ig.state.deserialize(buff);
             await ig.qe.syncLoginExperiments();
@@ -117,7 +117,7 @@ function update(req, res, next) {
 }
 
 function getComments(req, res, next) {
-    if (!req.body.destination.information.username || req.body.destination.information.username === "" ||
+    if (!req.body.destination.details.username || req.body.destination.details.username === "" ||
 
     !req.body.destination.information.session || req.body.destination.information.session === "" ||
         !req.body.destination.details.broadcast_id || req.body.destination.details.broadcast_id === "") {
@@ -128,7 +128,7 @@ function getComments(req, res, next) {
         Bluebird.try(async () => {
 
             const ig = new instagram_private_api_1.IgApiClient();
-            ig.state.generateDevice(req.body.destination.information.username);
+            ig.state.generateDevice(req.body.destination.details.username);
             let buff = Buffer.from(req.body.destination.information.session, 'base64').toString('utf8');
             await ig.state.deserialize(buff);
             await ig.qe.syncLoginExperiments();
@@ -156,7 +156,7 @@ function getComments(req, res, next) {
 }
 
 function sendComment(req, res, next) {
-    if (!req.body.destination.information.username || req.body.destination.information.username === "" ||
+    if (!req.body.destination.details.username || req.body.destination.details.username === "" ||
 
     !req.body.destination.information.session || req.body.destination.information.session === "" ||
         !req.body.destination.details.broadcast_id || req.body.destination.details.broadcast_id === "") {
@@ -167,7 +167,7 @@ function sendComment(req, res, next) {
         Bluebird.try(async () => {
 
             const ig = new instagram_private_api_1.IgApiClient();
-            ig.state.generateDevice(req.body.destination.information.username);
+            ig.state.generateDevice(req.body.destination.details.username);
             let buff = Buffer.from(req.body.destination.information.session, 'base64').toString('utf8');
             await ig.state.deserialize(buff);
             await ig.qe.syncLoginExperiments();
@@ -193,7 +193,7 @@ function sendComment(req, res, next) {
 }
 
 function pinComment(req, res, next) {
-    if (!req.body.destination.information.username || req.body.destination.information.username === "" ||
+    if (!req.body.destination.details.username || req.body.destination.details.username === "" ||
 
     !req.body.destination.information.session || req.body.destination.information.session === "" ||
         !req.body.destination.details.broadcast_id || req.body.destination.details.broadcast_id === "" ||
@@ -206,7 +206,7 @@ function pinComment(req, res, next) {
         Bluebird.try(async () => {
 
             const ig = new instagram_private_api_1.IgApiClient();
-            ig.state.generateDevice(req.body.destination.information.username);
+            ig.state.generateDevice(req.body.destination.details.username);
             let buff = Buffer.from(req.body.destination.information.session, 'base64').toString('utf8');
             await ig.state.deserialize(buff);
             await ig.qe.syncLoginExperiments();
@@ -232,7 +232,7 @@ function pinComment(req, res, next) {
 }
 
 function unpinComment(req, res, next) {
-    if (!req.body.destination.information.username || req.body.destination.information.username === "" ||
+    if (!req.body.destination.details.username || req.body.destination.details.username === "" ||
 
     !req.body.destination.information.session || req.body.destination.information.session === "" ||
         !req.body.destination.details.broadcast_id || req.body.destination.details.broadcast_id === "" ||
@@ -245,7 +245,7 @@ function unpinComment(req, res, next) {
         Bluebird.try(async () => {
 
             const ig = new instagram_private_api_1.IgApiClient();
-            ig.state.generateDevice(req.body.destination.information.username);
+            ig.state.generateDevice(req.body.destination.details.username);
             let buff = Buffer.from(req.body.destination.information.session, 'base64').toString('utf8');
             await ig.state.deserialize(buff);
             await ig.qe.syncLoginExperiments();
@@ -271,7 +271,7 @@ function unpinComment(req, res, next) {
 }
 
 function getViewers(req, res, next) {
-    if (!req.body.destination.information.username || req.body.destination.information.username === "" ||
+    if (!req.body.destination.details.username || req.body.destination.details.username === "" ||
 
     !req.body.destination.information.session || req.body.destination.information.session === "" ||
         !req.body.destination.details.broadcast_id || req.body.destination.details.broadcast_id === "") {
@@ -283,7 +283,7 @@ function getViewers(req, res, next) {
         Bluebird.try(async () => {
 
             const ig = new instagram_private_api_1.IgApiClient();
-            ig.state.generateDevice(req.body.destination.information.username);
+            ig.state.generateDevice(req.body.destination.details.username);
             let buff = Buffer.from(req.body.destination.information.session, 'base64').toString('utf8');
             await ig.state.deserialize(buff);
             await ig.qe.syncLoginExperiments();
