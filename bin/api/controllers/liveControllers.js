@@ -55,7 +55,7 @@ function start(req, res, next) {
 function stop(req, res, next) {
     if (!req.body.information.username || req.body.information.username === "" ||
         !req.body.information.session || req.body.information.session === "" ||
-        !req.body.information.broadcast_id || req.body.information.broadcast_id === "") {
+        !req.body.details.broadcast_id || req.body.details.broadcast_id === "") {
         res.status(422).send({ 'message': 9 });
         return;
     }
@@ -68,8 +68,8 @@ function stop(req, res, next) {
             await ig.state.deserialize(buff);
             await ig.qe.syncLoginExperiments();
 
-            const live_info = await ig.live.endBroadcast(req.body.information.broadcast_id);
-            let info = await ig.live.getFinalViewerList(req.body.information.broadcast_id);
+            const live_info = await ig.live.endBroadcast(req.body.details.broadcast_id);
+            let info = await ig.live.getFinalViewerList(req.body.details.broadcast_id);
             res.send({ 'visitors_count': info.total_unique_viewer_count});
 
         }).catch(e => res.status(400).send({ 'message': '9' }));
@@ -80,7 +80,7 @@ function stop(req, res, next) {
 function update(req, res, next) {
     if (!req.body.information.username || req.body.information.username === "" ||
         !req.body.information.session || req.body.information.session === "" ||
-        !req.body.information.broadcast_id || req.body.information.broadcast_id === "") {
+        !req.body.details.broadcast_id || req.body.details.broadcast_id === "") {
         res.status(422).send({ 'message': 9 });
         return;
     }
@@ -94,9 +94,9 @@ function update(req, res, next) {
             await ig.qe.syncLoginExperiments();
 
             if (req.body.details.comment_status == 1)
-                await ig.live.unmuteComment(req.body.information.broadcast_id);
+                await ig.live.unmuteComment(req.body.details.broadcast_id);
             else if (req.body.details.comment_status == 2)
-                await ig.live.muteComment(req.body.information.broadcast_id);
+                await ig.live.muteComment(req.body.details.broadcast_id);
 
             res.send({ 'status': 'ok' });
         }).catch(instagram_private_api_1.IgLoginRequiredError, async () => {
@@ -120,7 +120,7 @@ function getComments(req, res, next) {
     if (!req.body.destination.information.username || req.body.destination.information.username === "" ||
 
     !req.body.destination.information.session || req.body.destination.information.session === "" ||
-        !req.body.destination.information.broadcast_id || req.body.destination.information.broadcast_id === "") {
+        !req.body.destination.details.broadcast_id || req.body.destination.details.broadcast_id === "") {
         res.status(422).send({ 'message': 9 });
         return;
     }
@@ -132,7 +132,7 @@ function getComments(req, res, next) {
             let buff = Buffer.from(req.body.destination.information.session, 'base64').toString('utf8');
             await ig.state.deserialize(buff);
             await ig.qe.syncLoginExperiments();
-            let broadcastId = req.body.destination.information.broadcast_id;
+            let broadcastId = req.body.destination.details.broadcast_id;
             let lastCommentTs = (req.body.comment.comment ? req.body.comment.comment.created_at:0);
             let commentsRequested = 10;
             let { comments } = await ig.live.getComment({ broadcastId, commentsRequested, lastCommentTs });
@@ -159,7 +159,7 @@ function sendComment(req, res, next) {
     if (!req.body.destination.information.username || req.body.destination.information.username === "" ||
 
     !req.body.destination.information.session || req.body.destination.information.session === "" ||
-        !req.body.destination.information.broadcast_id || req.body.destination.information.broadcast_id === "") {
+        !req.body.destination.details.broadcast_id || req.body.destination.details.broadcast_id === "") {
         res.status(422).send({ 'message': 9 });
         return;
     }
@@ -172,7 +172,7 @@ function sendComment(req, res, next) {
             await ig.state.deserialize(buff);
             await ig.qe.syncLoginExperiments();
 
-            let comment = await ig.live.comment(req.body.destination.information.broadcast_id, req.body.comment);
+            let comment = await ig.live.comment(req.body.destination.details.broadcast_id, req.body.comment);
             res.send({ 'comment': comment });
 
         }).catch(instagram_private_api_1.IgLoginRequiredError, async () => {
@@ -196,7 +196,7 @@ function pinComment(req, res, next) {
     if (!req.body.destination.information.username || req.body.destination.information.username === "" ||
 
     !req.body.destination.information.session || req.body.destination.information.session === "" ||
-        !req.body.destination.information.broadcast_id || req.body.destination.information.broadcast_id === "" ||
+        !req.body.destination.details.broadcast_id || req.body.destination.details.broadcast_id === "" ||
         !req.body.comment || req.body.comment === "") {
         res.status(422).send({ 'message': 9 });
         return;
@@ -211,7 +211,7 @@ function pinComment(req, res, next) {
             await ig.state.deserialize(buff);
             await ig.qe.syncLoginExperiments();
 
-            await ig.live.pinComment(req.body.destination.information.broadcast_id, req.body.comment.comment.pk);
+            await ig.live.pinComment(req.body.destination.details.broadcast_id, req.body.comment.comment.pk);
             res.send({ 'status': "ok" });
 
         }).catch(instagram_private_api_1.IgLoginRequiredError, async () => {
@@ -235,7 +235,7 @@ function unpinComment(req, res, next) {
     if (!req.body.destination.information.username || req.body.destination.information.username === "" ||
 
     !req.body.destination.information.session || req.body.destination.information.session === "" ||
-        !req.body.destination.information.broadcast_id || req.body.destination.information.broadcast_id === "" ||
+        !req.body.destination.details.broadcast_id || req.body.destination.details.broadcast_id === "" ||
         !req.body.comment || req.body.comment === "") {
         res.status(422).send({ 'message': 9 });
         return;
@@ -250,7 +250,7 @@ function unpinComment(req, res, next) {
             await ig.state.deserialize(buff);
             await ig.qe.syncLoginExperiments();
 
-            await ig.live.unpinComment(req.body.destination.information.broadcast_id, req.body.comment.comment.pk);
+            await ig.live.unpinComment(req.body.destination.details.broadcast_id, req.body.comment.comment.pk);
             res.send({ 'status': "ok" });
 
         }).catch(instagram_private_api_1.IgLoginRequiredError, async () => {
@@ -274,7 +274,7 @@ function getViewers(req, res, next) {
     if (!req.body.destination.information.username || req.body.destination.information.username === "" ||
 
     !req.body.destination.information.session || req.body.destination.information.session === "" ||
-        !req.body.destination.information.broadcast_id || req.body.destination.information.broadcast_id === "") {
+        !req.body.destination.details.broadcast_id || req.body.destination.details.broadcast_id === "") {
         res.status(422).send({ 'message': 9 });
         return;
     }
@@ -288,7 +288,7 @@ function getViewers(req, res, next) {
             await ig.state.deserialize(buff);
             await ig.qe.syncLoginExperiments();
 
-            let {users} = await ig.live.getViewerList(req.body.destination.information.broadcast_id);
+            let {users} = await ig.live.getViewerList(req.body.destination.details.broadcast_id);
             res.send({ 'viewers': users });
 
         }).catch(instagram_private_api_1.IgLoginRequiredError, async () => {
