@@ -11,7 +11,7 @@ services:
       - ./:/app
       - /app/node_modules
 
-    command: ["nodejs", "bin/app.js"]
+    command: ["node", "bin/app.js"]
     ports:
       - ${NODE_EXPOSED_PORT:-0}:3000
 
