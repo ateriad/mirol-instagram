@@ -5,6 +5,7 @@ const { json } = require("body-parser");
 const Bluebird = require("bluebird");
 
 function start(req, res, next) {
+
     if (!req.body.details.username || req.body.details.username === "" ||
         !req.body.details.comment_status || req.body.details.comment_status === "") {
         res.status(422).send({ 'message': 9 });
@@ -111,7 +112,9 @@ function update(req, res, next) {
         ).catch(instagram_private_api_1.IgResponseError, async () => {
             res.status(400).send({ 'message': '6' });
         }
-        ).catch(e => res.status(400).send({ 'message': '10' }));
+        ).catch(e => {
+            res.status(400).send({ 'message': '10','details': e.message })
+        });
 
     })();
 }
