@@ -90,8 +90,22 @@ function update(req, res, next) {
 
             const ig = new instagram_private_api_1.IgApiClient();
             ig.state.generateDevice(req.body.details.username);
+            
             let buff = Buffer.from(req.body.information.session, 'base64').toString('utf8');
-            await ig.state.deserialize(buff);
+            console.log(`Decoded session string : ${buff}`);
+
+        
+            try{
+                await ig.state.deserialize(buff);
+                console.log(`Session deserilaized successfully`);
+            }catch(e){
+                console.error("Failed to deserialize session:", {
+                    message: e.message,
+                    stack: e.stack,
+                    name: e.name,
+                });
+            }
+
             await ig.qe.syncLoginExperiments();
 
             if (req.body.details.comment_status == 1)
