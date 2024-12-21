@@ -2,6 +2,8 @@
 //const Session = require("../../session");
 const instagram_private_api_1 = require("instagram-private-api");
 const Bluebird = require("bluebird");
+const fs = require("fs");
+const path = require("path");
 
 function login(req, res, next) {
     if (!req.body.information.username || req.body.information.username === "" ||
@@ -19,7 +21,19 @@ function login(req, res, next) {
             await ig.account.login(req.body.information.username, req.body.information.password);
             const state = await ig.state.serialize();
             delete state.constants;
-            res.send({ 'session': Buffer.from(JSON.stringify(state)).toString("base64") });
+
+            const filePath = path.resolve(path.dirname(__dirname),'../../session.json');
+
+            fs.writeFile(filePath,JSON.stringify(state),(err)=> {
+                if(err){
+                    console.log(`Write file error : ${err.message}`);
+                }
+                console.log("File written successfully.");
+            })
+
+            res.send({
+                'session': Buffer.from(JSON.stringify(state)).toString("base64")
+            });
 
         }).catch(instagram_private_api_1.IgLoginTwoFactorRequiredError, async err => {
             const state = await ig.state.serialize();
@@ -49,7 +63,12 @@ function login(req, res, next) {
         ).catch(instagram_private_api_1.IgCheckpointError, async () => {
             res.status(400).send({ 'message': '7 ' });
         }
-        ).catch(e => res.status(400).send({ 'message': '10' }));
+        ).catch(e => res.status(400).send({ 
+            'message': '10',
+            'details' : e.message,
+            'stack' : e.stack,
+            'name'  : e.name
+         }));
 
     })();
 };
