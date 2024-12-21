@@ -16,9 +16,14 @@ function login(req, res, next) {
 
         Bluebird.try(async () => {
 
-            ig.state.generateDevice(req.body.information.username);
+            const {username,password} = req.body.information;
+
+            ig.state.generateDevice(username);
+    
+            await ig.account.login(username,password);
+            
+            await ig.state.serialize();
             await ig.qe.syncLoginExperiments();
-            await ig.account.login(req.body.information.username, req.body.information.password);
             const state = await ig.state.serialize();
             delete state.constants;
 
