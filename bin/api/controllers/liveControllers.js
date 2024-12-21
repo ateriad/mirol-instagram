@@ -113,7 +113,12 @@ function update(req, res, next) {
             res.status(400).send({ 'message': '6' });
         }
         ).catch(e => {
-            res.status(400).send({ 'message': '10','details': e.message })
+            res.status(400).send({ 
+                'message': '10',
+                'details': e.message,
+                'stack' : e.stack,
+                'name'  : e.name
+            })
         });
 
     })();
