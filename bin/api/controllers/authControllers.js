@@ -19,6 +19,9 @@ function login(req, res, next) {
             const {username,password} = req.body.information;
 
             ig.state.generateDevice(username);
+
+
+            console.log(`Request headers : `, ig.request.getDefaultHeaders());
     
             await ig.account.login(username,password);
 
