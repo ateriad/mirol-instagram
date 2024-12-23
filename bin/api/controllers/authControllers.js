@@ -22,8 +22,6 @@ function login(req, res, next) {
     
             await ig.account.login(username,password);
 
-            await ig.account.currentUser();
-            
             await ig.state.serialize();
             await ig.qe.syncLoginExperiments();
             const state = await ig.state.serialize();
