@@ -21,11 +21,16 @@ function login(req, res, next) {
             ig.state.generateDevice(username);
     
             await ig.account.login(username,password);
+
+            await ig.account.currentUser();
             
             await ig.state.serialize();
             await ig.qe.syncLoginExperiments();
             const state = await ig.state.serialize();
             delete state.constants;
+
+             // Log the serialized state for debugging
+            // console.log('Serialized state:', JSON.stringify(state, null, 2));
 
             const filePath = path.resolve(path.dirname(__dirname),'../../session.json');
 
