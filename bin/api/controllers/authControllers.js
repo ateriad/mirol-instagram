@@ -19,16 +19,22 @@ function login(req, res, next) {
             const {username,password} = req.body.information;
 
             ig.state.generateDevice(username);
-
-
+        
             console.log(`Request headers : `, ig.request.getDefaultHeaders());
     
-            await ig.account.login(username,password);
+            const loggedInUser =  await ig.account.login(username,password);
+            let userId = loggedInUser.pk.toString();
 
-            await ig.state.serialize();
+            // await ig.state.serialize();
             await ig.qe.syncLoginExperiments();
             const state = await ig.state.serialize();
             delete state.constants;
+
+            const userInfo = await ig.user.info(userId);
+            const follower_count = userInfo.follower_count;
+            
+            console.log(`User id: ${userId}`);
+            console.log(`Follower count: ${follower_count}`);
 
              // Log the serialized state for debugging
             // console.log('Serialized state:', JSON.stringify(state, null, 2));
